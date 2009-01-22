@@ -1,0 +1,87 @@
+Wizard
+======
+
+This plugin allows you to create wizards on the fly without manipulating your DB
+or worrying about transitions, states, etc. You can declare the previous and nexts steps
+for each action by simply naming the action of the corresponding step. It also allows you
+to use any model along with any wizard as many times as you want. All you have to do is 
+create a template for each wizard action. Check at the example section to better understand how
+it works.
+
+I didn't comment any of my code. I'll try to get around to it, but I'm busy as hell. The code is very
+basic and anyone that understands ruby/rails please feel free to comment it for me. 
+
+Thanks
+
+Christopher Rankin
+
+Example
+=======
+
+Create a new wizard controller for each wizard you wish to create.
+* Don't name your wizards like my_long_wizard_name_wizard. It will break the helpers.
+Name your wizard like so. mylongwizardname
+I like to name my wizards ending with the word wizard
+orderwizard becomes OrderWizard < ApplicationController ... if you dont like that sorry.
+
+So install the plugin into your vendor/plugins like normal
+
+# next generate a new controller wizard
+script/generate controller customwizard
+
+# Your Wizard controller should like something like this.
+class OrderWizard < ApplicationController
+
+	def index
+		# This is your wizards first page so get whatever objects you want
+		# to have available to your template.
+		
+		# Let the template the wizard steps
+		# wizard (:current_step, :previous_step, :next_step)
+		wizard(:index, :index, :add_item)
+	end
+	
+	def add_item
+		@items = Item.find(:all)
+		wizard(:add_item, :index) # There is no next step. You either submit the form or you go back.
+	end
+	
+	# This method just saves the item from the submited form from add_item
+	def save_item
+		@item = Item.new(params[:item])
+		wizard(:save_item, :add_item, :complete_order) # Now you can go back and add another item or finish your order.
+	end
+		
+	# The order is complete and saved. So what do we do for next page?
+	# Simple we can direct the user wherever we want. Because in the 
+	# template we can change the name of the link like "Home" or "Add Item".
+	# So let's set previous_step to the start page of the wizard
+	# and keep next_step empty.
+	def complete_order
+		Order.complete(params[:id])
+		wizard(:complete_order, :index)
+	end
+
+end
+
+Now in our templates we can do something like
+views/orderwizard/index
+
+Some HTMl here...
+<%= link_to_next_step :order_wizard, :add_an_item %>
+
+this will build something like 
+<a href="/orderwizard/add_item">Add an item</a>
+
+Here are all the available helpers
+
+<%= current_wizard_step %><br/> # prints the current step
+<%= next_wizard_step %><br/> # prints the next step
+<%= previous_wizard_step %><br/> # prints the previous step
+<%= link_to_next_step :wizard_name %><br/> # Link text defaults to "Next"
+<%= link_to_previous_step :wizard_name %><br/> # Link text defauts to "Previous"
+<%= link_to_next_step :wizard_name, :before_this %><br/> # Set link text to "Before this"
+<%= link_to_previous_step :wizard_name, :after_this %><br/># Set link text to "After this"
+
+
+Copyright (c) 2009 [name of plugin creator], released under the MIT license
