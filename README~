@@ -83,8 +83,5 @@ Here are all the available helpers
 <%= link_to_next_step :wizard_name, :before_this %><br/> # Set link text to "Before this"
 <%= link_to_previous_step :wizard_name, :after_this %><br/># Set link text to "After this"
 
-You can also set variables, and html options.
-<%= link_to_next_step :my_wizard, :before_this, {:id => 3, :zip => 28546}, {:class => "turtledove"} %> 
-
 
 Copyright (c) 2009 [name of plugin creator], released under the MIT license
