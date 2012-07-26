@@ -87,4 +87,4 @@ You can also set variables, and html options.
 <%= link_to_next_step :my_wizard, :before_this, {:id => 3, :zip => 28546}, {:class => "turtledove"} %> 
 
 
-Copyright (c) 2009 [name of plugin creator], released under the MIT license
+Copyright (c) 2009 Christopher Rankin, released under the MIT license
